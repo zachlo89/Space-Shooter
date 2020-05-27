@@ -116,11 +116,7 @@ public class Player : MonoBehaviour
         // ** Restrain player; first chk inspector to see the x where player goes offscreen
         transform.position = new Vector3(transform.position.x, Mathf.Clamp(transform.position.y, -3.8f, _defaultZero), _defaultZero);
 
-        // X so new if statement diff condition
-        // if player pos on x > 11; wrap around screen when player goes to far R
-        // x pos = -11
-        // else if player on the x is < -11 
-        // x pos = 11
+
         if (transform.position.x > _rightBounds)
         {
             transform.position = new Vector3(_leftBounds, transform.position.y, _defaultZero);
@@ -137,7 +133,6 @@ public class Player : MonoBehaviour
         // reassign canfire to how long game has been running + fire rate
         // means time.time IS NOT going to be T for at least whatever fire rate is equal to.
         _canfire = Time.time + _fireRate;
-
 
         if (_isTripleShotActive == true)
         {
@@ -171,7 +166,6 @@ public class Player : MonoBehaviour
         }
 
         _lives--;
-        
         // if lives is 2 enable right engine
         if (_lives == 2)
         {
