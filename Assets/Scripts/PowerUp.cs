@@ -25,9 +25,6 @@ public class PowerUp : MonoBehaviour
         }
     }
 
-    // on trigger collision; if player collided with power up
-    // only be collectable by the player (use tags)
-    // on collected, destroy
 
     // which powerup getting...
     void OnTriggerEnter2D(Collider2D other) 
@@ -40,13 +37,6 @@ public class PowerUp : MonoBehaviour
             // nn null chk; successfully grabbed component or we crashed program
             if (player != null) // we found player component
             {
-                // change this num in the inspector field
-                // if powerup id is 0
-                // player.TripleShotActive();
-                // else if powerup id is 1
-                // play speed powerup
-                // else if powerup id is 2
-                // play shield powerup
                 switch (_powerUpID)
                 {
                     case 0:
@@ -63,6 +53,7 @@ public class PowerUp : MonoBehaviour
                         break;
                 }
             }
+            
             Destroy(this.gameObject);
         }
     }

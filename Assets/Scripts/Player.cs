@@ -8,32 +8,38 @@ public class Player : MonoBehaviour
     [SerializeField] private Vector3 _startPos = new Vector3(0, 0, 0);
     [SerializeField] private float _speed;
     [SerializeField] private float _speedMultiplier = 2;
+
     [SerializeField] private GameObject _laserPrefab;
     [SerializeField] private GameObject _tripleShotPrefab;
     [SerializeField] private GameObject _shieldPrefab;
     [SerializeField] private GameObject _leftEngineFire, _rightEngineFire;
+
     [SerializeField] private float _fireRate = 0.5f; // cool down delay
     [SerializeField] private int _lives = 3;
+
     [SerializeField] private bool _isTripleShotActive = false; // for testing serialize
     [SerializeField] private bool _isSpeedPowerUpActive = false;
     [SerializeField] private bool _isShieldPowerUpActive = false;
+    
     private float _canfire = -1.0f; // cool down delay; this var determines if we can fire.
     private float _laserOffset = 1.1f;
     private float _leftBounds = -11.0f;
     private float _rightBounds = 11.0f;
     private int _defaultZero = 0;
+    
     private SpawnManager _spawnManager; //  ** 1 create ref for when player dies
     private float _secToWait = 5.0f;
 
+
     // ** Score system...
     [SerializeField] private int _score = 0;
+    
+    
     private UIManager _uiManager; // create handle to obj we want; find it, cache it.
 
     // ** Audio...
     [SerializeField] private SFXManager _sfxManager;
-    // [SerializeField] public AudioSource _audioSource;
-    // [SerializeField] public AudioClip _laserSoundClip;
-    // [SerializeField] public AudioClip _explosionSoundClip;
+
 
 
     void Start()
@@ -46,10 +52,6 @@ public class Player : MonoBehaviour
 
         _sfxManager = GameObject.Find("SFXManager").GetComponent<SFXManager>();
 
-        // _audioSource = GetComponent<AudioSource>();
-
-
-        // ** null chk...
         if (_spawnManager == null)
         {
             Debug.LogError("The Spawn Manager is NULL");
@@ -64,15 +66,6 @@ public class Player : MonoBehaviour
         {
             Debug.LogError("The SFX Manager is NULL");
         }
-        // if (_audioSource == null)
-        // {
-        //     Debug.LogError("The Audio Source on the player is NULL");
-        // }
-        // else
-        // {
-        //     _audioSource.clip = _laserSoundClip; // this allows to leave audio source clip field blank and assign it a new clip we choose.
-        //     // _audioSource.clip = _explosionSoundClip;
-        // }
     }
  
 
@@ -114,22 +107,13 @@ public class Player : MonoBehaviour
         {
             transform.Translate(direction * _speed * Time.deltaTime);
         }
-        else
+        
+        if (Input.GetKey(KeyCode.LeftShift) || _isSpeedPowerUpActive == true)
         {
             transform.Translate(direction * _speed * _speedMultiplier * Time.deltaTime);
         }
 
         // ** Restrain player; first chk inspector to see the x where player goes offscreen
-        // if (transform.position.y >= 0)
-        // {
-        //     transform.position = new Vector3(transform.position.x, 0, 0);
-        // }
-        // else if (transform.position.y <= -3.8f)
-        // {
-        //     transform.position = new Vector3(transform.position.x, -3.8f, 0);
-        // }
-
-        // same as above more optimized method; clamp Y val between a certain range
         transform.position = new Vector3(transform.position.x, Mathf.Clamp(transform.position.y, -3.8f, _defaultZero), _defaultZero);
 
         // X so new if statement diff condition
@@ -154,12 +138,7 @@ public class Player : MonoBehaviour
         // means time.time IS NOT going to be T for at least whatever fire rate is equal to.
         _canfire = Time.time + _fireRate;
 
-        /**
-         * if triple shot is true
-         * fire 3 lasers (triple shot prefab)
-         * else fire 1 laser
-         * triple shot instantiate; instantiate 3 lasers
-         * */
+
         if (_isTripleShotActive == true)
         {
             // + new Vector3(_laserOffset, _defaultZero , _defaultZero)
@@ -171,10 +150,6 @@ public class Player : MonoBehaviour
             // offset laser instantiate
             Instantiate(_laserPrefab, transform.position + new Vector3(_defaultZero, _laserOffset, _defaultZero), Quaternion.identity);
         }
-
-        // play laser audio effect after visual laser fire; sound travels faster
-        // create a var to store audio clip
-
     }
 
     public void Damage()
@@ -263,8 +238,6 @@ public class Player : MonoBehaviour
     }
 
 
-    // method to add 10 score
-    // comm with UI Manager to update score
     public void AddScore(int points)
     {
         _score += points;
