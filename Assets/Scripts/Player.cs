@@ -67,7 +67,7 @@ public class Player : MonoBehaviour
             Debug.LogError("The SFX Manager is NULL");
         }
     }
- 
+
 
     void Update()
     {
@@ -83,24 +83,9 @@ public class Player : MonoBehaviour
 
     void CalculateMovement()
     {
-        // user input use the a,d or arrow keys to move L/R; becomes 1 or - 1 in translate code below
-        // assign to input manager
         float _horizontalInput = Input.GetAxis("Horizontal");
         float _verticalInput = Input.GetAxis("Vertical");
 
-        // transform.Translate(Vector3.right);
-        // transform.Translate(new Vector3(1, 0, 0)); // same as above
-
-        // to slow it down converts from frame based to real time; Time.deltaTime considered as 1 sec; time in sec it took complete the last fr to curr fr
-        // moves 1m/sec
-        // transform.Translate(Vector3.right * Time.deltaTime);
-
-        // moves 5m/sec
-        // new Vector3(1, 0, 0) * 1 * 3 * real time; distributive property => (5,0,0) after mult by 5
-        // transform.Translate(Vector3.right * _horizontalInput * _speed * Time.deltaTime);
-        // transform.Translate(Vector3.up * _verticalInput * _speed * Time.deltaTime);
-
-        // combine into one line for optimization; same as above two lines
         Vector3 direction = new Vector3(_horizontalInput, _verticalInput, _defaultZero);
 
         if (_isSpeedPowerUpActive == false)
@@ -130,80 +115,54 @@ public class Player : MonoBehaviour
 
     void FireLaser()
     {
-        // reassign canfire to how long game has been running + fire rate
-        // means time.time IS NOT going to be T for at least whatever fire rate is equal to.
         _canfire = Time.time + _fireRate;
 
         if (_isTripleShotActive == true)
         {
-            // + new Vector3(_laserOffset, _defaultZero , _defaultZero)
             Instantiate(_tripleShotPrefab, transform.position, Quaternion.identity);
         }
         else
         {
-            // spawn obj, define pos, and rot; ** AT RUNTIME instantiate a prefab
-            // offset laser instantiate
             Instantiate(_laserPrefab, transform.position + new Vector3(_defaultZero, _laserOffset, _defaultZero), Quaternion.identity);
         }
     }
 
     public void Damage()
     {
-        // if shield is active
-        // player invincible for one hit
-        if (_isShieldPowerUpActive == true)
-        {
-            // de-activate shields
-            // to allow next time get hit deduct life
-            _isShieldPowerUpActive = false;
-
-            // ** disable shield visualizer
-            _shieldPrefab.SetActive(false);
-
-            // do nothing...leave this method
-            // return; keyword
-            return;
-        }
-
         _lives--;
-        // if lives is 2 enable right engine
+
         if (_lives == 2)
         {
+            _shieldPrefab.GetComponent<Renderer>().material.color = Color.yellow;
             _rightEngineFire.SetActive(true);
         }
-        // else if lives is 1 enable left engine
+
         else if (_lives == 1)
         {
+            _shieldPrefab.GetComponent<Renderer>().material.color = Color.red;
             _leftEngineFire.SetActive(true);
         }
 
-        // call update method in UI manager
         _uiManager.UpdateLives(_lives);
 
-        // chk if dead
-        // destroy us if are
         if (_lives < 1)
         {
-            // comm w/ spawn manager; stop spawning once player dies
             _spawnManager.onPlayerDeath();
             _sfxManager.PlaySFX("explosion_sound");
-            Destroy(this.gameObject); // the player
+            Destroy(this.gameObject);
         }
     }
 
 
     public void TripleShotActive() // ** TRIPLE SHOT POWERUP
     {
-        // triple shot active becomes true
         _isTripleShotActive = true;
         _sfxManager.PlaySFX("power_up_sound");
 
-        // start the power down coroutine for triple shot
         StartCoroutine(TripleShotCoolDownRoutine());
     }
-    // Ienumerator TripleShotPowerDownRoutine
-    // wait 5 sec
-    // set the triple shot to false
+
+
     IEnumerator TripleShotCoolDownRoutine()
     {
         yield return new WaitForSeconds(_secToWait);
@@ -235,7 +194,6 @@ public class Player : MonoBehaviour
     public void AddScore(int points)
     {
         _score += points;
-        // get component
-        _uiManager.UpdateScore(_score); // pass in curr val of score
+        _uiManager.UpdateScore(_score);
     }
 }
