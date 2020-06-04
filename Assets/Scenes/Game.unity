@@ -503,7 +503,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 0.75
+  m_Volume: 0.566
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -603,6 +603,7 @@ MonoBehaviour:
   _laserSoundClip: {fileID: 8300000, guid: 75676f361bdfeaf41a46623e95df3dbc, type: 3}
   _explosionSoundClip: {fileID: 8300000, guid: a885c043fab7e46438bba03ba9dab6bc, type: 3}
   _powerUpSoundClip: {fileID: 8300000, guid: 5ee343246919d2b4bba63ae629e95494, type: 3}
+  _reloadClip: {fileID: 8300000, guid: 3f52c0e4a5dd042ce971d97747274312, type: 3}
 --- !u!4 &444199480
 Transform:
   m_ObjectHideFlags: 0
@@ -660,7 +661,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 5b17a0088dcdf924fa92da5af1e1be07, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0.5
+  m_Volume: 0.25
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -785,11 +786,13 @@ MonoBehaviour:
   _shieldPrefab: {fileID: 907835775}
   _leftEngineFire: {fileID: 162129753}
   _rightEngineFire: {fileID: 1342715718}
-  _fireRate: 0.2
   _lives: 3
   _isTripleShotActive: 0
   _isSpeedPowerUpActive: 0
   _isShieldPowerUpActive: 0
+  _maxAmmoCount: 15
+  _currentAmmoCount: 0
+  _fireRate: 0.2
   _score: 0
   _sfxManager: {fileID: 444199479}
 --- !u!212 &728881278
@@ -1178,7 +1181,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.75
   m_Pitch: 1
   Loop: 0
   Mute: 0

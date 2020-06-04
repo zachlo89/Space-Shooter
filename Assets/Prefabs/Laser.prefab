@@ -145,6 +145,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _speed: 8
   _laserOutBounds: 7
+  _laserLimit: 15
+  _canFire: 0
 --- !u!82 &2685259964350666439
 AudioSource:
   m_ObjectHideFlags: 0

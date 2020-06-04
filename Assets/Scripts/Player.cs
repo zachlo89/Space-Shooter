@@ -9,23 +9,31 @@ public class Player : MonoBehaviour
     [SerializeField] private float _speed;
     [SerializeField] private float _speedMultiplier = 2;
 
+
     [SerializeField] private GameObject _laserPrefab;
     [SerializeField] private GameObject _tripleShotPrefab;
     [SerializeField] private GameObject _shieldPrefab;
     [SerializeField] private GameObject _leftEngineFire, _rightEngineFire;
 
-    [SerializeField] private float _fireRate = 0.5f; // cool down delay
+
     [SerializeField] private int _lives = 3;
+
 
     [SerializeField] private bool _isTripleShotActive = false; // for testing serialize
     [SerializeField] private bool _isSpeedPowerUpActive = false;
     [SerializeField] private bool _isShieldPowerUpActive = false;
     
-    private float _canfire = -1.0f; // cool down delay; this var determines if we can fire.
+
+    // *** LASER ***********************************************************
+    [SerializeField] private int _maxAmmoCount = 15;
+    [SerializeField] private int _currentAmmoCount;
+    private float _reloadTime = -1.0f; // cool down delay; this var determines if we can fire.
+    [SerializeField] private float _fireRate = 0.5f; // cool down delay
     private float _laserOffset = 1.1f;
     private float _leftBounds = -11.0f;
     private float _rightBounds = 11.0f;
     private int _defaultZero = 0;
+
     
     private SpawnManager _spawnManager; //  ** 1 create ref for when player dies
     private float _secToWait = 5.0f;
@@ -41,31 +49,36 @@ public class Player : MonoBehaviour
     [SerializeField] private SFXManager _sfxManager;
 
 
+    // private Renderer cachedShieldColorComponent;
+
+
+
 
     void Start()
     {
         transform.position = _startPos;
 
         _spawnManager = GameObject.Find("SpawnManager").GetComponent<SpawnManager>();
-
-        _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
-
-        _sfxManager = GameObject.Find("SFXManager").GetComponent<SFXManager>();
-
         if (_spawnManager == null)
         {
             Debug.LogError("The Spawn Manager is NULL");
         }
 
+        _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
         if (_uiManager == null)
         {
             Debug.LogError("The UI Manager is NULL");
         }
-        
+
+        _sfxManager = GameObject.Find("SFXManager").GetComponent<SFXManager>();
         if (_sfxManager == null)
         {
             Debug.LogError("The SFX Manager is NULL");
         }
+
+        // var cachedShieldColorComponent = _shieldPrefab.GetComponent<Renderer>();
+
+        _currentAmmoCount = _maxAmmoCount;
     }
 
 
@@ -74,11 +87,12 @@ public class Player : MonoBehaviour
         CalculateMovement();
 
         // _laserOffset = new Vector3(0.0f, 1.0f, 0.0f);
-        if (Input.GetKeyDown(KeyCode.Space) && Time.time > _canfire) // cool down fire delay
+        if (Input.GetKeyDown(KeyCode.Space) && Time.time > _reloadTime) // cool down fire delay
         {
             FireLaser();
         }
     }
+
 
 
     void CalculateMovement()
@@ -113,9 +127,20 @@ public class Player : MonoBehaviour
     }
 
 
-    void FireLaser()
+
+    void FireLaser() //***********************************************
     {
-        _canfire = Time.time + _fireRate;
+        _reloadTime = Time.time + _fireRate;
+
+        _currentAmmoCount--;
+
+        if (_currentAmmoCount <= 0)
+        {
+            _currentAmmoCount = 0;
+            ReloadAmmo();
+            _sfxManager.PlaySFX("ReloadRemix");
+            return;
+        }
 
         if (_isTripleShotActive == true)
         {
@@ -126,6 +151,11 @@ public class Player : MonoBehaviour
             Instantiate(_laserPrefab, transform.position + new Vector3(_defaultZero, _laserOffset, _defaultZero), Quaternion.identity);
         }
     }
+        void ReloadAmmo()
+        {
+            Debug.Log("Reloading...");
+        }
+
 
     public void Damage()
     {
@@ -134,6 +164,8 @@ public class Player : MonoBehaviour
         if (_lives == 2)
         {
             _shieldPrefab.GetComponent<Renderer>().material.color = Color.yellow;
+            // _colorToChange = _cachedShieldColorComponent.material.color.g;
+            // cachedShieldColorComponent.material.SetColor("Color", Color.yellow);
             _rightEngineFire.SetActive(true);
         }
 
@@ -152,6 +184,7 @@ public class Player : MonoBehaviour
             Destroy(this.gameObject);
         }
     }
+
 
 
     public void TripleShotActive() // ** TRIPLE SHOT POWERUP

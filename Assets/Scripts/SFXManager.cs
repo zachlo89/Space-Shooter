@@ -12,6 +12,7 @@ public class SFXManager : MonoBehaviour
     [SerializeField] private AudioClip _laserSoundClip;
     [SerializeField] private AudioClip _explosionSoundClip;
     [SerializeField] private AudioClip _powerUpSoundClip;
+    [SerializeField] private AudioClip _reloadClip;
 
 
     void Start()
@@ -29,18 +30,34 @@ public class SFXManager : MonoBehaviour
             case "laser_shot":
                 _audioSource.clip = _laserSoundClip;
                 break;
+
             case "explosion_sound":
                 _audioSource.clip = _explosionSoundClip;
                 break;
+
             case "power_up_sound":
                 _audioSource.clip = _powerUpSoundClip;
                 break;
+
+            case "ReloadRemix":
+                _audioSource.clip = _reloadClip;
+                break;
+
             default:
                 Debug.Log("No audio file found");
                 break;
         }
         
-        _audioSource.Play();
+        if (audioClipToPlay == "ReloadRemix")
+        {
+            _audioSource.Play();
+            _audioSource.loop = true;
+        }
+        else
+        {
+            _audioSource.Play();
+        }
+
     }
 
 }

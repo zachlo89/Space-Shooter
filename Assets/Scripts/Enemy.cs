@@ -55,6 +55,11 @@ public class Enemy : MonoBehaviour
     void Update()
     {
         CalculateMovement();
+        FireLaserEnemy();
+    }
+
+    void FireLaserEnemy()
+    {
         // enemy laser fire every 3-7 sec
         if (Time.time > _canFire)
         {
@@ -64,13 +69,14 @@ public class Enemy : MonoBehaviour
             // auto pause unity as soon as enemy spawn an obj (laser)
             // Debug.Break();
             Laser[] lasers = enemyLaser.GetComponentsInChildren<Laser>();
-            
+
             for (int i = 0; i < lasers.Length; i++)
             {
                 lasers[i].AssignEnemyLaser();
             }
         }
     }
+
 
     void CalculateMovement() // makes it easy to debug
     {

@@ -11,6 +11,7 @@ public class Laser : MonoBehaviour
     private bool _isEnemyLaser = false; // is this enemy or player laser
 
 
+
     void Update()
     {
         if (_isEnemyLaser == false) // player laser
@@ -24,28 +25,29 @@ public class Laser : MonoBehaviour
     }
 
 
-    // we move up if it's a player laser and down when enemy
+    // PLAYER LASER
     void MoveUp()
     {
-        // translate laser up via sec
-        // whatever num speed is number of meters/sec u move.
-        transform.Translate(Vector3.up * _speed * Time.deltaTime);
+            // translate laser up via sec
+            // whatever num speed is number of meters/sec u move.
+            transform.Translate(Vector3.up * _speed * Time.deltaTime);
 
-        if (transform.position.y > _laserOutBounds)
-        {
-            // chk if this obj has a parent
-            if (transform.parent != null)
+            if (transform.position.y > _laserOutBounds)
             {
-                // destroy the parent; and children destroyed as well
-                Destroy(transform.parent.gameObject); // GO of parent
+                // chk if this obj has a parent
+                if (transform.parent != null)
+                {
+                    // destroy the parent; and children destroyed as well
+                    Destroy(transform.parent.gameObject); // GO of parent
+                }
+                // otherwise it's normal laser and we destory this GO...
+                Destroy(this.gameObject); // obj this script is attached to
+                // Destroy(this.gameObject, 5.0f); // destorys GO in a given time
             }
-            // otherwise it's normal laser and we destory this GO...
-            Destroy(this.gameObject); // obj this script is attached to
-            // Destroy(this.gameObject, 5.0f); // destorys GO in a given time
-        }
     }
 
-    // we move up if it's a player laser and down when enemy
+
+    // ENEMY LASER
     void MoveDown() 
     {
         // translate laser up via sec
