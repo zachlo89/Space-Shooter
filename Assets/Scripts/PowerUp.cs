@@ -52,12 +52,12 @@ public class PowerUp : MonoBehaviour
                         player.ShieldPowerUpActive();
                         break;
                     
-                    // case 3:
-                    //     player.ReloadAmmoActive();
-                    //     break;
+                    case 3:
+                        player.ReloadAmmoActive();
+                        break;
 
                     default:
-                        Debug.Log("If none of above cases, see this");
+                        Debug.Log("Invalid Power Up selection");
                         break;
                 }
             }

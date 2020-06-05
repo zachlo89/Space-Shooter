@@ -9,24 +9,28 @@ public class Player : MonoBehaviour
     [SerializeField] private float _speed;
     [SerializeField] private float _speedMultiplier = 2;
 
-
+    [Header ("PREFABS")]
     [SerializeField] private GameObject _laserPrefab;
     [SerializeField] private GameObject _tripleShotPrefab;
     [SerializeField] private GameObject _shieldPrefab;
     [SerializeField] private GameObject _leftEngineFire, _rightEngineFire;
 
 
+    [Header ("LIFE")]
     [SerializeField] private int _lives = 3;
 
 
-    [SerializeField] private bool _isTripleShotActive = false; // for testing serialize
+    // for testing serialize
+    [Header ("POWERUP BOOLS")]
+    [SerializeField] private bool _isTripleShotActive = false; 
     [SerializeField] private bool _isSpeedPowerUpActive = false;
     [SerializeField] private bool _isShieldPowerUpActive = false;
-    // [SerializeField] private bool _isReloadAmmoActive = false;
+    [SerializeField] private bool _isReloadAmmoActive = false;
     
 
 
     // *** LASER ***********************************************************
+    [Header ("LASER")]
     [SerializeField] private int _maxAmmoCount = 15;
     [SerializeField] private int _currentAmmoCount;
     private float _canFire = -1.0f; // cool down delay; this var determines if we can fire.
@@ -162,7 +166,7 @@ public class Player : MonoBehaviour
     {
         _lives--;
 
-        StartCoroutine(_camShake.Shake(0.15f, 0.3f));
+        StartCoroutine(_camShake.Shake(0.15f, 0.4f));
 
         if (_lives == 2)
         {
@@ -189,8 +193,9 @@ public class Player : MonoBehaviour
     }
 
 
-    public void DeployReload() // ** RELOAD AMMO POWERUP
+    public void ReloadAmmoActive() // ** RELOAD AMMO POWERUP
     {
+        _isReloadAmmoActive = true;
         Debug.Log("Reloading...");
         StartCoroutine(ReloadRoutine());
     }
@@ -198,7 +203,7 @@ public class Player : MonoBehaviour
     {
         while (_currentAmmoCount == 0)
         {
-            yield return new WaitForSeconds(2);
+            yield return new WaitForSeconds(0.5f);
             _currentAmmoCount = _maxAmmoCount;
         }
     }

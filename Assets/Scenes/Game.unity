@@ -790,6 +790,7 @@ MonoBehaviour:
   _isTripleShotActive: 0
   _isSpeedPowerUpActive: 0
   _isShieldPowerUpActive: 0
+  _isReloadAmmoActive: 0
   _maxAmmoCount: 15
   _currentAmmoCount: 0
   _fireRate: 0.2
@@ -1574,6 +1575,7 @@ MonoBehaviour:
   - {fileID: 8263221197170089455, guid: 2a9d95b6e03e0420a9087191577baf50, type: 3}
   - {fileID: 9083476772996671318, guid: 3fa2d3b8ac56b4c34be073b9dddfbf3c, type: 3}
   - {fileID: 8386927914217392069, guid: 2721185e91d3140b0bde6c694b4f9ff2, type: 3}
+  - {fileID: 8665574494327964491, guid: 44194b0aa260a4c0e9628ce86c085220, type: 3}
 --- !u!4 &1640063609
 Transform:
   m_ObjectHideFlags: 0

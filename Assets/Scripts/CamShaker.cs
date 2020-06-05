@@ -4,28 +4,33 @@ using UnityEngine;
 
 public class CamShaker : MonoBehaviour
 {
+    private Vector3 _originalPos;
+    private float _elapsedTime;
+
+
 	public IEnumerator Shake(float duration, float magnitude)
     {
         // orig pos of cam
-        Vector3 originalPos = transform.localPosition; 
+        _originalPos = transform.localPosition; 
 
         // time elapsed since shaking began
-        float elapsedTime = 0.0f;
+        _elapsedTime = 0.0f;
 
         // keep shaking ...
         // time elasped since shaking began doesn't exceed duration of shake; keep shaking
-        while (elapsedTime < duration)
+        while (_elapsedTime < duration)
         {
             float x = Random.Range(-1.0f, 1.0f) * magnitude;
             float y = Random.Range(-1.0f, 1.0f) * magnitude;
 
-            transform.localPosition = new Vector3(x, y, originalPos.z);
+            transform.localPosition = new Vector3(x, y, _originalPos.z);
 
-            elapsedTime += Time.deltaTime;
+            _elapsedTime += Time.deltaTime;
 
-            yield return null; // before con't to next iteration of while loop draw one frame.
+            // wait for a frame before con't to next iteration of while loop; draws one frame.
+            yield return null; 
         }
 
-        transform.localPosition = originalPos;
+        transform.localPosition = _originalPos;
     }
 }
