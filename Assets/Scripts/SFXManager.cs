@@ -50,8 +50,8 @@ public class SFXManager : MonoBehaviour
         
         if (audioClipToPlay == "ReloadRemix")
         {
-            _audioSource.Play();
             _audioSource.loop = true;
+            _audioSource.Play();
         }
         else
         {

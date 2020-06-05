@@ -22,12 +22,14 @@ public class Player : MonoBehaviour
     [SerializeField] private bool _isTripleShotActive = false; // for testing serialize
     [SerializeField] private bool _isSpeedPowerUpActive = false;
     [SerializeField] private bool _isShieldPowerUpActive = false;
+    // [SerializeField] private bool _isReloadAmmoActive = false;
     
+
 
     // *** LASER ***********************************************************
     [SerializeField] private int _maxAmmoCount = 15;
     [SerializeField] private int _currentAmmoCount;
-    private float _reloadTime = -1.0f; // cool down delay; this var determines if we can fire.
+    private float _canFire = -1.0f; // cool down delay; this var determines if we can fire.
     [SerializeField] private float _fireRate = 0.5f; // cool down delay
     private float _laserOffset = 1.1f;
     private float _leftBounds = -11.0f;
@@ -47,6 +49,9 @@ public class Player : MonoBehaviour
 
     // ** Audio...
     [SerializeField] private SFXManager _sfxManager;
+
+    // CAM Shake
+    [SerializeField] private CamShaker _camShake;
 
 
     // private Renderer cachedShieldColorComponent;
@@ -87,7 +92,7 @@ public class Player : MonoBehaviour
         CalculateMovement();
 
         // _laserOffset = new Vector3(0.0f, 1.0f, 0.0f);
-        if (Input.GetKeyDown(KeyCode.Space) && Time.time > _reloadTime) // cool down fire delay
+        if (Input.GetKeyDown(KeyCode.Space) && Time.time > _canFire) // cool down fire delay
         {
             FireLaser();
         }
@@ -130,14 +135,13 @@ public class Player : MonoBehaviour
 
     void FireLaser() //***********************************************
     {
-        _reloadTime = Time.time + _fireRate;
+        _canFire = Time.time + _fireRate;
 
         _currentAmmoCount--;
 
         if (_currentAmmoCount <= 0)
         {
             _currentAmmoCount = 0;
-            ReloadAmmo();
             _sfxManager.PlaySFX("ReloadRemix");
             return;
         }
@@ -151,15 +155,14 @@ public class Player : MonoBehaviour
             Instantiate(_laserPrefab, transform.position + new Vector3(_defaultZero, _laserOffset, _defaultZero), Quaternion.identity);
         }
     }
-        void ReloadAmmo()
-        {
-            Debug.Log("Reloading...");
-        }
+
 
 
     public void Damage()
     {
         _lives--;
+
+        StartCoroutine(_camShake.Shake(0.15f, 0.3f));
 
         if (_lives == 2)
         {
@@ -186,16 +189,29 @@ public class Player : MonoBehaviour
     }
 
 
+    public void DeployReload() // ** RELOAD AMMO POWERUP
+    {
+        Debug.Log("Reloading...");
+        StartCoroutine(ReloadRoutine());
+    }
+    IEnumerator ReloadRoutine()
+    {
+        while (_currentAmmoCount == 0)
+        {
+            yield return new WaitForSeconds(2);
+            _currentAmmoCount = _maxAmmoCount;
+        }
+    }
 
-    public void TripleShotActive() // ** TRIPLE SHOT POWERUP
+
+
+    public void TripleShotActive() // ** TRIPLE SHOT POWERUP ***
     {
         _isTripleShotActive = true;
         _sfxManager.PlaySFX("power_up_sound");
 
         StartCoroutine(TripleShotCoolDownRoutine());
     }
-
-
     IEnumerator TripleShotCoolDownRoutine()
     {
         yield return new WaitForSeconds(_secToWait);
@@ -203,7 +219,8 @@ public class Player : MonoBehaviour
     }
 
 
-    public void SpeedPowerUpActive() // ** SPEED POWERUP
+
+    public void SpeedPowerUpActive() // ** SPEED POWERUP ***
     {
         _isSpeedPowerUpActive = true;
         _sfxManager.PlaySFX("power_up_sound");
@@ -214,14 +231,16 @@ public class Player : MonoBehaviour
         yield return new WaitForSeconds(_secToWait);
         _isSpeedPowerUpActive = false;
     }
-
-
-    public void ShieldPowerUpActive() // ** SHIELD POWERUP; no need cooldown
+    
+    
+    
+    public void ShieldPowerUpActive() // ** SHIELD POWERUP; no need cooldown ***
     {
         _isShieldPowerUpActive = true;
         _sfxManager.PlaySFX("power_up_sound");
         _shieldPrefab.SetActive(true);
     }
+
 
 
     public void AddScore(int points)

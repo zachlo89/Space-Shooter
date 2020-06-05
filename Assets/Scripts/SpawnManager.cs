@@ -13,10 +13,6 @@ public class SpawnManager : MonoBehaviour
     private bool _stopPowerUpSpawning = false;
 
 
-    void Start()
-    {
-
-    }
 
     public void StartSpawning()
     {
