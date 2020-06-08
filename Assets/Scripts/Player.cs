@@ -26,6 +26,7 @@ public class Player : MonoBehaviour
     [SerializeField] private bool _isSpeedPowerUpActive = false;
     [SerializeField] private bool _isShieldPowerUpActive = false;
     [SerializeField] private bool _isReloadAmmoActive = false;
+    [SerializeField] private bool _isHealthActive = false;
     
 
 
@@ -54,7 +55,7 @@ public class Player : MonoBehaviour
     // ** Audio...
     [SerializeField] private SFXManager _sfxManager;
 
-    // CAM Shake
+    // ** CAM Shake
     [SerializeField] private CamShaker _camShake;
 
 
@@ -174,12 +175,22 @@ public class Player : MonoBehaviour
             // _colorToChange = _cachedShieldColorComponent.material.color.g;
             // cachedShieldColorComponent.material.SetColor("Color", Color.yellow);
             _rightEngineFire.SetActive(true);
+
+            // if (_isHealthActive == true)
+            // {
+            //     _rightEngineFire.SetActive(false);
+            // }
         }
 
         else if (_lives == 1)
         {
             _shieldPrefab.GetComponent<Renderer>().material.color = Color.red;
             _leftEngineFire.SetActive(true);
+
+            if (_isHealthActive == true)
+            {
+                _leftEngineFire.SetActive(false);
+            }
         }
 
         _uiManager.UpdateLives(_lives);
@@ -190,16 +201,40 @@ public class Player : MonoBehaviour
             _sfxManager.PlaySFX("explosion_sound");
             Destroy(this.gameObject);
         }
+    
     }
 
 
-    public void ReloadAmmoActive() // ** RELOAD AMMO POWERUP
+    // *** HEALTH POWERUP ***  ******************************************
+    public void HealthPowerUpActive()
+    {
+        _isHealthActive = true;
+        _sfxManager.PlaySFX("power_up_sound");
+        StartCoroutine(HealthCoolDownRoutine());
+    }
+    IEnumerator HealthCoolDownRoutine()
+    {
+        yield return new WaitForSeconds(0.5f); // 5
+        AddLife();
+        if (_isHealthActive == true)
+        {
+            _rightEngineFire.SetActive(false);
+            _leftEngineFire.SetActive(false);
+        }
+        // _isHealthActive = false;
+    }
+    // ******************************************
+
+
+
+    // *** RELOAD AMMO POWERUP ***
+    public void ReloadAmmoActive() 
     {
         _isReloadAmmoActive = true;
-        Debug.Log("Reloading...");
-        StartCoroutine(ReloadRoutine());
+        // Debug.Log("Reloading...");
+        StartCoroutine(ReloadCoolDownRoutine());
     }
-    IEnumerator ReloadRoutine()
+    IEnumerator ReloadCoolDownRoutine()
     {
         while (_currentAmmoCount == 0)
         {
@@ -207,14 +242,15 @@ public class Player : MonoBehaviour
             _currentAmmoCount = _maxAmmoCount;
         }
     }
+    // ******************************************
 
 
 
-    public void TripleShotActive() // ** TRIPLE SHOT POWERUP ***
+    // *** TRIPLE SHOT POWERUP ***
+    public void TripleShotActive() 
     {
         _isTripleShotActive = true;
         _sfxManager.PlaySFX("power_up_sound");
-
         StartCoroutine(TripleShotCoolDownRoutine());
     }
     IEnumerator TripleShotCoolDownRoutine()
@@ -222,10 +258,12 @@ public class Player : MonoBehaviour
         yield return new WaitForSeconds(_secToWait);
         _isTripleShotActive = false;
     }
+    // ******************************************
 
 
 
-    public void SpeedPowerUpActive() // ** SPEED POWERUP ***
+    // *** SPEED POWERUP ***
+    public void SpeedPowerUpActive()
     {
         _isSpeedPowerUpActive = true;
         _sfxManager.PlaySFX("power_up_sound");
@@ -236,17 +274,25 @@ public class Player : MonoBehaviour
         yield return new WaitForSeconds(_secToWait);
         _isSpeedPowerUpActive = false;
     }
+    // ******************************************
     
-    
-    
-    public void ShieldPowerUpActive() // ** SHIELD POWERUP; no need cooldown ***
+
+
+    // *** SHIELD POWERUP; no need cooldown ***
+    public void ShieldPowerUpActive() // 
     {
         _isShieldPowerUpActive = true;
         _sfxManager.PlaySFX("power_up_sound");
         _shieldPrefab.SetActive(true);
     }
+    // ******************************************
 
 
+    public void AddLife()
+    {
+        _lives += 1;
+        _uiManager.UpdateLives(_lives);
+    }
 
     public void AddScore(int points)
     {

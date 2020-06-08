@@ -56,6 +56,10 @@ public class PowerUp : MonoBehaviour
                         player.ReloadAmmoActive();
                         break;
 
+                    case 4:
+                        player.HealthPowerUpActive();
+                        break;
+
                     default:
                         Debug.Log("Invalid Power Up selection");
                         break;

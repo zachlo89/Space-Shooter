@@ -27,11 +27,13 @@ public class UIManager : MonoBehaviour
         }
     }
 
+
     // call into UI manager
     public void UpdateScore(int playerScore)
     {
         _scoreText.text = "Score: " + playerScore.ToString();
     }
+
 
     public void UpdateLives(int currentLives)
     {
