@@ -6,8 +6,13 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     [SerializeField] private Vector3 _startPos = new Vector3(0, 0, 0);
+
+
+    [Header ("Thrust/Speed")]
     [SerializeField] private float _speed;
     [SerializeField] private float _speedMultiplier = 2;
+    // [SerializeField] UIManager _currentThrustCharge;
+
 
     [Header ("PREFABS")]
     [SerializeField] private GameObject _laserPrefab;
@@ -30,7 +35,7 @@ public class Player : MonoBehaviour
     
 
 
-    // *** LASER ***********************************************************
+    // *** LASER
     [Header ("LASER")]
     [SerializeField] private int _maxAmmoCount = 15;
     [SerializeField] private int _currentAmmoCount;
@@ -46,16 +51,16 @@ public class Player : MonoBehaviour
     private float _secToWait = 5.0f;
 
 
-    // ** Score system...
+    // ** SCORE SYSTEM...
     [SerializeField] private int _score = 0;
     
     
     private UIManager _uiManager; // create handle to obj we want; find it, cache it.
 
-    // ** Audio...
+    // ** AUDIO...
     [SerializeField] private SFXManager _sfxManager;
 
-    // ** CAM Shake
+    // ** CAM SHAKE
     [SerializeField] private CamShaker _camShake;
 
 
@@ -138,7 +143,7 @@ public class Player : MonoBehaviour
 
 
 
-    void FireLaser() //***********************************************
+    void FireLaser()
     {
         _canFire = Time.time + _fireRate;
 
@@ -205,7 +210,7 @@ public class Player : MonoBehaviour
     }
 
 
-    // *** HEALTH POWERUP ***  ******************************************
+    // *** HEALTH POWERUP ***
     public void HealthPowerUpActive()
     {
         _isHealthActive = true;
@@ -262,24 +267,26 @@ public class Player : MonoBehaviour
 
 
 
-    // *** SPEED POWERUP ***
+    // *** SPEED POWERUP ***    ******************************************
     public void SpeedPowerUpActive()
     {
         _isSpeedPowerUpActive = true;
         _sfxManager.PlaySFX("power_up_sound");
+        _uiManager.UseThrust(1.0f);
         StartCoroutine(SpeedPowerUpCoolDownRoutine());
     }
     IEnumerator SpeedPowerUpCoolDownRoutine()
     {
         yield return new WaitForSeconds(_secToWait);
         _isSpeedPowerUpActive = false;
+        _uiManager.UseThrust(0.0f);
     }
     // ******************************************
-    
+
 
 
     // *** SHIELD POWERUP; no need cooldown ***
-    public void ShieldPowerUpActive() // 
+    public void ShieldPowerUpActive()
     {
         _isShieldPowerUpActive = true;
         _sfxManager.PlaySFX("power_up_sound");
